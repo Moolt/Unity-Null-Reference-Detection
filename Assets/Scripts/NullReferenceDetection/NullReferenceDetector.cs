@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
+using System;
+using UnityObject = UnityEngine.Object;
 
 public enum NullReferenceSeverity
 {
@@ -54,24 +56,21 @@ public class NullReferenceDetector {
 
     public IEnumerable<NullReference> FindAllNullReferences()
     {
-        var objects = Object.FindObjectsOfType<GameObject>();
-        var result = objects.SelectMany(o => FindNullReferencesIn(o)).ToList();
+        var objects = UnityObject.FindObjectsOfType<GameObject>();
         return objects.SelectMany(o => FindNullReferencesIn(o));
     }
 
     private IEnumerable<NullReference> FindNullReferencesIn(GameObject gameObject)
     {
         var components = gameObject.AllComponents();
-        var result = components.SelectMany(c => FindNullReferencesIn(c)).ToList();
         return components.SelectMany(c => FindNullReferencesIn(c));
     }
 
     private IEnumerable<NullReference> FindNullReferencesIn(Component component)
     {        
         var inspectableFields = component.GetInspectableFields();
-        var nullFields = inspectableFields.Where(f => f.IsNull(component)).ToList();
+        var nullFields = inspectableFields.Where(f => f.IsNull(component));
 
-        var result = nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Severity = NullReferenceSeverity.Normal }).ToList();
         return nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Severity = NullReferenceSeverity.Normal });        
     }
 }
