@@ -6,7 +6,7 @@ namespace NullReferenceDetection
 {
     public static class ExecuteFindNullReferences
     {
-        [MenuItem("Tools/Find null references")]
+        [MenuItem("Tools/Find Null References")]
         public static void Execute()
         {
             var detector = new NullReferenceDetector();
