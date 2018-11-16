@@ -51,6 +51,7 @@ Clicking on an error message will highlight the target object in the `Hierarchy`
 
 ## The plug-in does not...
  *  check list items for null references.
+ *  check for properties of default unity components (such as transform, box collider etc.)
  *  consider objects in other scenes but the currently opened scene.
  *  consider inactive objects.
 
