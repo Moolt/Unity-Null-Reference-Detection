@@ -1,6 +1,9 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field)]
-public class ValueOptional : Attribute
+namespace NullReferenceDetection
 {
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ValueOptional : Attribute
+    {
+    }
 }

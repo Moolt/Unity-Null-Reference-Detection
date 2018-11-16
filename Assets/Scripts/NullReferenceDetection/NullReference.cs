@@ -1,41 +1,44 @@
 ﻿using System.Reflection;
 using UnityEngine;
 
-public struct NullReference
+namespace NullReferenceDetection
 {
-    public NullReferenceSeverity Severity;
-    public FieldInfo FieldInfo;
-    public Component Source;
-
-    public GameObject GameObject
+    public struct NullReference
     {
-        get
+        public NullReferenceSeverity Severity;
+        public FieldInfo FieldInfo;
+        public Component Source;
+
+        public GameObject GameObject
         {
-            return Source.gameObject;
+            get
+            {
+                return Source.gameObject;
+            }
         }
-    }
 
-    public string GameObjectName
-    {
-        get
+        public string GameObjectName
         {
-            return Source.gameObject.name;
+            get
+            {
+                return Source.gameObject.name;
+            }
         }
-    }
 
-    public string ComponentName
-    {
-        get
+        public string ComponentName
         {
-            return Source.GetType().ToString();
+            get
+            {
+                return Source.GetType().ToString();
+            }
         }
-    }
 
-    public string FieldName
-    {
-        get
+        public string FieldName
         {
-            return FieldInfo.Name;
+            get
+            {
+                return FieldInfo.Name;
+            }
         }
     }
 }

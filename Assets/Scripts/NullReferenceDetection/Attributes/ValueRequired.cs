@@ -1,6 +1,9 @@
 ﻿using System;
 
-[AttributeUsage(AttributeTargets.Field)]
-public class ValueRequired : Attribute
+namespace NullReferenceDetection
 {
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ValueRequired : Attribute
+    {
+    }
 }

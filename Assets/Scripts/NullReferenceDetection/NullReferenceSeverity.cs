@@ -1,6 +1,9 @@
-﻿public enum NullReferenceSeverity
+﻿namespace NullReferenceDetection
 {
-    Ignore,
-    Normal,
-    Severe
+    public enum NullReferenceSeverity
+    {
+        Ignore,
+        Normal,
+        Severe
+    }
 }
