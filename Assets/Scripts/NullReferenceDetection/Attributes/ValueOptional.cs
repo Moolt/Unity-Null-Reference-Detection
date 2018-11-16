@@ -1,6 +1,6 @@
 ﻿using System;
 
 [AttributeUsage(AttributeTargets.Field)]
-public class ValueRequired : Attribute
+public class ValueOptional : Attribute
 {
 }
