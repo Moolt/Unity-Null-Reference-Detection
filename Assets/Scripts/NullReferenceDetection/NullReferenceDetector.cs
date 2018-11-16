@@ -1,63 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using System;
 using UnityObject = UnityEngine.Object;
 
-public enum NullReferenceSeverity
+public class NullReferenceDetector
 {
-    Ignore,
-    Normal,
-    Severe
-}
-
-public struct NullReference
-{
-    public NullReferenceSeverity Severity;
-    public FieldInfo FieldInfo;
-    public Component Source;
-
-    public GameObject GameObject
-    {
-        get
-        {
-            return Source.gameObject;
-        }
-    }
-
-    public string GameObjectName
-    {
-        get
-        {
-            return Source.gameObject.name;
-        }
-    }
-
-    public string ComponentName
-    {
-        get
-        {
-            return Source.GetType().ToString();
-        }
-    }
-
-    public string FieldName
-    {
-        get
-        {
-            return FieldInfo.Name;
-        }
-    }
-}
-
-public class NullReferenceDetector {
-
     public IEnumerable<NullReference> FindAllNullReferences()
     {
         var objects = UnityObject.FindObjectsOfType<GameObject>();
         return objects.SelectMany(o => FindNullReferencesIn(o));
+    }
+
+    public IEnumerable<NullReference> FindAllNullReferences(bool removeOptionalValues)
+    {
+        if (removeOptionalValues)
+        {
+            return FindAllNullReferences().Where(r => r.Severity != NullReferenceSeverity.Ignore).ToList();
+        }
+        return FindAllNullReferences();
     }
 
     private IEnumerable<NullReference> FindNullReferencesIn(GameObject gameObject)
@@ -67,10 +28,25 @@ public class NullReferenceDetector {
     }
 
     private IEnumerable<NullReference> FindNullReferencesIn(Component component)
-    {        
+    {
         var inspectableFields = component.GetInspectableFields();
         var nullFields = inspectableFields.Where(f => f.IsNull(component));
 
-        return nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Severity = NullReferenceSeverity.Normal });        
+        return nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Severity = SeverityFor(f) });
+    }
+
+    private NullReferenceSeverity SeverityFor(FieldInfo field)
+    {
+        if (field.HasAttribute<ValueRequired>())
+        {
+            return NullReferenceSeverity.Severe;
+        }
+
+        if (field.HasAttribute<ValueOptional>())
+        {
+            return NullReferenceSeverity.Ignore;
+        }
+
+        return NullReferenceSeverity.Normal;
     }
 }
