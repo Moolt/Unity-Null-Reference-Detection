@@ -24,6 +24,30 @@ public struct NullReference
             return Source.gameObject;
         }
     }
+
+    public string GameObjectName
+    {
+        get
+        {
+            return Source.gameObject.name;
+        }
+    }
+
+    public string ComponentName
+    {
+        get
+        {
+            return Source.GetType().ToString();
+        }
+    }
+
+    public string FieldName
+    {
+        get
+        {
+            return FieldInfo.Name;
+        }
+    }
 }
 
 public class NullReferenceDetector {

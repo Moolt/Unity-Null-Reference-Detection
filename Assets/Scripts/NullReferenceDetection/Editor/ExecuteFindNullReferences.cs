@@ -14,9 +14,21 @@ public static class ExecuteFindNullReferences {
 
         foreach(var nullReference in nullReferences)
         {
-            var fieldName = ObjectNames.NicifyVariableName(nullReference.FieldInfo.Name);
-            var message = string.Format("Null reference found in <b>{0}</b> > <b>{1}</b> > <color=#FF0000><b>{2}</b></color>", nullReference.GameObject.name, nullReference.Source.GetType().ToString(), fieldName);
+            var fieldName = ObjectNames.NicifyVariableName(nullReference.FieldName);
+            var color = ColorForSeverity(nullReference.Severity);
+
+            var message = string.Format("Null reference found in <b>{0}</b> > <b>{1}</b> > <color={2}><b>{3}</b></color>", 
+                nullReference.GameObjectName, 
+                nullReference.ComponentName, 
+                color, 
+                fieldName);
+
             Debug.Log(message, nullReference.GameObject);
         }
+    }
+
+    private static string ColorForSeverity(NullReferenceSeverity severity)
+    {
+        return severity == NullReferenceSeverity.Normal ? "#b29400" : "#ff0000";
     }
 }
