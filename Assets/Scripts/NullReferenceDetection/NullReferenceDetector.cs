@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Linq;
 using System.Reflection;
 using UnityObject = UnityEngine.Object;
+using System;
 
 namespace NullReferenceDetection
 {
@@ -14,13 +15,9 @@ namespace NullReferenceDetection
             return objects.SelectMany(o => FindNullReferencesIn(o));
         }
 
-        public IEnumerable<NullReference> FindAllNullReferences(bool removeOptionalValues)
+        public IEnumerable<NullReference> FindAllNullReferences(Func<NullReference,bool> filter)
         {
-            if (removeOptionalValues)
-            {
-                return FindAllNullReferences().Where(r => r.Severity != NullReferenceSeverity.Ignore).ToList();
-            }
-            return FindAllNullReferences();
+            return FindAllNullReferences().Where(filter).ToList();
         }
 
         private IEnumerable<NullReference> FindNullReferencesIn(GameObject gameObject)
@@ -34,22 +31,17 @@ namespace NullReferenceDetection
             var inspectableFields = component.GetInspectableFields();
             var nullFields = inspectableFields.Where(f => f.IsNull(component));
 
-            return nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Severity = SeverityFor(f) });
+            return nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Attribute = AttributeFor(f) });
         }
 
-        private NullReferenceSeverity SeverityFor(FieldInfo field)
+        private Type AttributeFor(FieldInfo field)
         {
-            if (field.HasAttribute<ValueRequired>())
+            if (field.HasAttribute<BaseAttribute>())
             {
-                return NullReferenceSeverity.Severe;
+                return field.GetAttribute<BaseAttribute>().GetType();
             }
 
-            if (field.HasAttribute<ValueOptional>())
-            {
-                return NullReferenceSeverity.Ignore;
-            }
-
-            return NullReferenceSeverity.Normal;
+            return null;
         }
     }
 }

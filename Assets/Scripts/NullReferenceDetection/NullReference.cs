@@ -1,11 +1,14 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using UnityEngine;
 
 namespace NullReferenceDetection
 {
     public struct NullReference
     {
-        public NullReferenceSeverity Severity;
+        public static readonly string UnattributedIdentifier = "Unattributed";
+
+        public Type Attribute;
         public FieldInfo FieldInfo;
         public Component Source;
 
@@ -38,6 +41,22 @@ namespace NullReferenceDetection
             get
             {
                 return FieldInfo.Name;
+            }
+        }
+
+        public bool IsAttributed
+        {
+            get
+            {
+                return Attribute != null;
+            }
+        }
+
+        public string AttributeIdentifier
+        {
+            get
+            {
+                return Attribute != null ? Attribute.Name : UnattributedIdentifier;
             }
         }
     }
