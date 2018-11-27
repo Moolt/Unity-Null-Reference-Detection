@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -33,13 +34,24 @@ namespace NullReferenceDetection
 
         public static bool HasAttribute<T>(this FieldInfo field)
         {
-            return field.GetCustomAttributes(typeof(T), false).Any();
+            return field.GetCustomAttributes(typeof(T), true).Any();
+        }
+
+        public static T GetAttribute<T>(this FieldInfo field)
+        {
+            return (T)field.GetCustomAttributes(typeof(T), true).FirstOrDefault();
         }
 
         public static bool IsNull(this FieldInfo field, object obj)
         {
             var value = field.GetValue(obj);
             return value == null || value.ToString() == "null";
+        }
+
+        public static IEnumerable<Type> GetDescendantTypes(this Type type)
+        {
+            var allTypes = Assembly.GetExecutingAssembly().GetTypes();
+            return allTypes.Where(t => t != type && type.IsAssignableFrom(t)).ToList();
         }
     }
 }
