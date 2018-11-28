@@ -8,6 +8,9 @@ namespace NullReferenceDetection
         private const string EnabledPostfix = "enabled";
         private const string ColorPostfix = "color";
 
+        private readonly bool _defaultEnabledState = false;
+        private readonly Color _defaultColor = Color.black;
+
         private string _identifier;
         private bool? _enabled = null;
         private Color? _color = null;
@@ -19,6 +22,9 @@ namespace NullReferenceDetection
 
         public PersistableAttribute(string identifier, bool enabled, Color color) : this(identifier)
         {
+            _defaultEnabledState = enabled;
+            _defaultColor = color;
+
             if (!IsEntryExistingFor(EnabledPostfix))
             {
                 IsEnabled = enabled;
@@ -53,7 +59,7 @@ namespace NullReferenceDetection
                         IsEnabled = true;
                     }
                 }
-                return _enabled ?? false;
+                return _enabled ?? _defaultEnabledState;
             }
             set
             {
@@ -78,15 +84,15 @@ namespace NullReferenceDetection
                     }
                     else
                     {
-                        Color = Color.black;
+                        Color = _defaultColor;
                     }
                 }
-                return _color ?? Color.black;
+                return _color ?? _defaultColor;
             }
             set
             {
                 _color = value;
-                var colorInstance = _color ?? Color.black;
+                var colorInstance = _color ?? _defaultColor;
                 var hexColor = string.Format("#{0}", ColorUtility.ToHtmlStringRGB(colorInstance));
                 EditorPrefs.SetString(KeyForPostfix(ColorPostfix), hexColor);
             }
