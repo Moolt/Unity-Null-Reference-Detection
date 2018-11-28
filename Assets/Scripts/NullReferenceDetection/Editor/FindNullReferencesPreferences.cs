@@ -8,12 +8,12 @@ namespace NullReferenceDetection
 {
     public class FindNullReferencesPreferences : MonoBehaviour
     {
+        private const float CellMargin = 6;
+
         [PreferenceItem("Null finder")]
         public static void PreferencesGUI()
-        {            
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
-            EditorGUILayout.Space();
+        {
+            GUILayout.Space(10);
 
             var attributes = PreferencesStorage.PersistableAttributes;
 
@@ -26,7 +26,7 @@ namespace NullReferenceDetection
         private static void HandleAttributeUI(PersistableAttribute attribute)
         {
             var rect = EditorGUILayout.BeginHorizontal();
-            rect = new Rect(rect.x, rect.y - 6, rect.width, rect.height + 12);
+            rect = new Rect(rect.x, rect.y - CellMargin, rect.width, rect.height + CellMargin * 2f);
             EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
             attribute.IsEnabled = EditorGUILayout.Toggle(attribute.IsEnabled, GUILayout.Width(15));
             EditorGUILayout.LabelField(attribute.Identifier, GUILayout.Width(150));
