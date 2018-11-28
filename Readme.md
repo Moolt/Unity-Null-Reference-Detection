@@ -45,6 +45,16 @@ __Using these custom attributes is purely optional__.
 
 If you now execute the plug-in via `Tools > Find Null References` the console will show two error messages, like in the screenshot above. The `capsule` reference is marked as `required`, therefore it's show as red. `sphere` is shown with the default severity and `cylinder` is not shown at all as the `[ValueOptional]` attribute allows the field to be a `null` reference.
 
+## Preferences
+
+You can open the preferences window by navigating to `Edit -> Preferences -> Null finder` where you can define which occurences of null references should be printed to the console. You can also change their text color.
+
+![alt text](https://raw.githubusercontent.com/Moolt/Unity-Null-Reference-Detection/master/Documentation/settings_screen.png "preferences")
+
+## Extension
+
+By inheriting from the abstract `BaseAttribute` class you can implement your own attributes. They will also show up in the preferences window where you assign a color of your choice to your custom attribute.
+
 ## Good to know
 
 Clicking on an error message will highlight the target object in the `Hierarchy`.
