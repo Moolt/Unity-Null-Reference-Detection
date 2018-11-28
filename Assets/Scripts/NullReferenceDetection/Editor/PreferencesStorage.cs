@@ -20,7 +20,7 @@ namespace NullReferenceDetection
             var attributes = typeof(BaseAttribute).GetDescendantTypes();
 
             // Initialize settings for unattributes fields
-            var unattributedWrapper = new PersistableAttribute(NullReference.UnattributedIdentifier, true, Color.yellow);
+            var unattributedWrapper = new PersistableAttribute(NullReference.UnattributedIdentifier, true, new Color(.717f, .647f, .125f));
             mapping.Add(NullReference.UnattributedIdentifier, unattributedWrapper);
 
             // Initialize Attributes
@@ -34,7 +34,7 @@ namespace NullReferenceDetection
                 }
                 else if (attribute == typeof(ValueRequired))
                 {
-                    persistenceWrapper = new PersistableAttribute(attribute.Name, true, Color.red);
+                    persistenceWrapper = new PersistableAttribute(attribute.Name, true, new Color(.718f, .129f, .176f));
                 }
                 else
                 {
