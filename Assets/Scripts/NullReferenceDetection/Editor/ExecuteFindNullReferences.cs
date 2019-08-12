@@ -1,4 +1,5 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 using System.Linq;
 
@@ -9,8 +10,13 @@ namespace NullReferenceDetection
         [MenuItem("Tools/Find Null References")]
         public static void Execute()
         {
+            CheckForNullReferences(IsVisible);
+        }
+
+        public static bool CheckForNullReferences(Func<NullReference, bool> filter)
+        {
             var detector = new NullReferenceDetector();
-            var nullReferences = detector.FindAllNullReferences(IsVisible).ToList();
+            var nullReferences = detector.FindAllNullReferences(filter, ExtensionMethods.LoadIgnoreList(), ExtensionMethods.LoadPrefabList()).ToList();
 
             foreach (var nullReference in nullReferences)
             {
@@ -25,8 +31,16 @@ namespace NullReferenceDetection
 
                 Debug.Log(message, nullReference.GameObject);
             }
-        }
 
+            return nullReferences.Any();
+        }
+        
+        public static bool IsNotUnity(NullReference nullReference)
+        {
+            var ns = nullReference.FieldInfo.FieldType.Namespace;
+            return ns != null && !ns.Split('.').First().Equals("UnityEngine");
+        }
+        
         public static bool IsVisible(NullReference nullReference)
         {
             return PreferencesStorage.IsVisible(nullReference.AttributeIdentifier);
