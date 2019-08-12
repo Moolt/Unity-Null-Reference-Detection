@@ -76,8 +76,8 @@ namespace NullReferenceDetection
                     string children = t.Item2 ? "1" : "0";
                     tr.WriteLine(t.Item1 + " " + children);
                 }
-                    
-                 tr.Dispose();
+
+                tr.Dispose();
             }
             catch (IOException e)
             {
@@ -92,36 +92,40 @@ namespace NullReferenceDetection
             
             if (!File.Exists(ignoreListfile))
             {
+                File.Create(ignoreListfile);
                 Debug.LogWarning("Null reference checker found no previously saved preferences file, so it created a new one");
                 return ignoreList;
             }
             
-                try
-                {
-                    TextReader tr =
-                        new StreamReader(ignoreListfile);
+            try
+            {
+                TextReader tr =
+                    new StreamReader(ignoreListfile);
 
-                    while (tr.Peek() != -1)
-                    {
-                        string line = tr.ReadLine();
-                        string name = line.Substring(0, line.Length - 2);
-                       
-                        if (line[line.Length - 1] == '1')
-                            ignoreList.Add(new Tuple<string, bool>(name, true));
-                        else if (line[line.Length - 1] == '0')
-                            ignoreList.Add(new Tuple<string, bool>(name, false));
-                        else 
-                            throw new IOException("Null Reference Checker encountered a problem when loading saved file");
-                    }
-                    
-                    tr.Dispose();
-                }
-                catch (IOException e)
+                while (tr.Peek() != -1)
                 {
-                    Debug.LogError(e.Message);
-                } 
+                    string line = tr.ReadLine();
+
+                    if (line.Trim().Length == 0) continue;
+                        
+                    string name = line.Substring(0, line.Length - 2);
+                       
+                    if (line[line.Length - 1] == '1')
+                        ignoreList.Add(new Tuple<string, bool>(name, true));
+                    else if (line[line.Length - 1] == '0')
+                        ignoreList.Add(new Tuple<string, bool>(name, false));
+                    else 
+                        throw new IOException("Null Reference Checker encountered a problem when loading saved file");
+                }
+                    
+                tr.Dispose();
+            }
+            catch (IOException e)
+            {
+                Debug.LogError(e.Message);
+            } 
                 
-                return ignoreList;
+            return ignoreList;
         }
         
         
@@ -131,15 +135,15 @@ namespace NullReferenceDetection
             try
             {
                 TextWriter tw =
-                    new StreamWriter(prefabListFile);
+                    new StreamWriter(prefabListFile, false);
 
                 foreach (var t in prefabList)
                 {
                     if (t != null)
                         tw.WriteLine(PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(t));
                 }
-
-                tw.Dispose();  
+                    
+                tw.Dispose();
             }
             catch (IOException e)
             {
@@ -155,33 +159,37 @@ namespace NullReferenceDetection
 
             if (!File.Exists(prefabListFile))
             {
+                File.Create(prefabListFile);
                 Debug.LogWarning("Null reference checker found no previously saved preferences file, so it created a new one");
                 return new List<GameObject>();
             }
 
             try
+            {
+                TextReader tr =
+                    new StreamReader(prefabListFile);
+
+                while (tr.Peek() != -1)
                 {
-                    TextReader tr =
-                        new StreamReader(prefabListFile);
+                    string line = tr.ReadLine();
+                        
+                    if (line.Trim().Length == 0) continue;
+                        
+                    GameObject g = AssetDatabase.LoadAssetAtPath<GameObject>(line);
 
-                    while (tr.Peek() != -1)
-                    {
-                        string line = tr.ReadLine();
-                        GameObject g = AssetDatabase.LoadAssetAtPath<GameObject>(line);
-
-                        if (g != null)
-                            results.Add(g);
-                        else
-                            Debug.LogWarning(
-                                "Null reference checker found no prefab at path " + line + " perhaps the path or filename changed. this path will be deleted from the list of prefabs and needs to be re-added manually");
-                    }
-                    
-                    tr.Dispose();
+                    if (g != null)
+                        results.Add(g);
+                    else
+                        Debug.LogWarning(
+                            "Null reference checker found no prefab at path " + line + " perhaps the path or filename changed. this path will be deleted from the list of prefabs and needs to be re-added manually");
                 }
-                catch (IOException e)
-                {
-                    Debug.LogError(e.Message);
-                } 
+                    
+                tr.Dispose();
+            }
+            catch (IOException e)
+            {
+                Debug.LogError(e.Message);
+            } 
             return results;
         }
         

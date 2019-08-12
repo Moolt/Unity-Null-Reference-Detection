@@ -84,22 +84,27 @@ namespace NullReferenceDetection
                          
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(10);
-             
-            if (GUILayout.Button("+", GUILayout.Width(40))) 
+
+            if (GUILayout.Button("+", GUILayout.Width(40)))
+            {
                 ignoreList.Add(new Tuple<string, bool>("", false));
-                         
-            if (GUILayout.Button("-", GUILayout.Width(40)))
+            }
+
+            if (GUILayout.Button("-", GUILayout.Width(40)) && ignoreList.Count > 0)
+            {
                 ignoreList.RemoveAt(ignoreList.Count - 1);
-                         
+                dirtyIgnoreList = true;
+            }
+
             GUILayout.Space(18);
-             
-            if (ignoreList.Count == 0)
-                return;//nothing more to do here
-             
-            //handle UI and save changes to local ignoreList
-            for (int i = 0; i < ignoreList.Count; i++)
-                ignoreList[i] = HandleIndividualIgnoreItem(ignoreList[i]);
-             
+
+            if (ignoreList.Count != 0)
+            {
+                //handle UI and save changes to local ignoreList
+                for (int i = 0; i < ignoreList.Count; i++)
+                    ignoreList[i] = HandleIndividualIgnoreItem(ignoreList[i]);
+            }
+
             //save the inputs, if anything changed
             if (dirtyIgnoreList)
             {
@@ -126,8 +131,7 @@ namespace NullReferenceDetection
 
             if (name != t.Item1 || ignoreChildren != t.Item2)
                 dirtyIgnoreList = true;
-            
-            
+             
             return new Tuple<string, bool>(name.Trim(), ignoreChildren);
         }
         
@@ -137,7 +141,6 @@ namespace NullReferenceDetection
 
         private static void HandlePrefabPreferences()
         {
-            
             if (prefabsList == null)
                 prefabsList = ExtensionMethods.LoadPrefabList();
             
@@ -153,20 +156,25 @@ namespace NullReferenceDetection
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(10);
 
-            if (GUILayout.Button("+", GUILayout.Width(40))) 
+            if (GUILayout.Button("+", GUILayout.Width(40)))
+            {
                 prefabsList.Add(null);
-            
-            if (GUILayout.Button("-", GUILayout.Width(40)))
+            }
+
+            if (GUILayout.Button("-", GUILayout.Width(40)) && prefabsList.Count > 0)
+            {
                 prefabsList.RemoveAt(prefabsList.Count - 1);
-            
+                dirtyPrefabsList = true;
+            }
+
             GUILayout.Space(18);
 
-            if (prefabsList.Count == 0)
-                return;//nothing more to do here
-
             //handle UI and save changes to local ignoreList
-            for (int i = 0; i < prefabsList.Count; i++)
-                prefabsList[i] = HandleIndividualPrefabItems(prefabsList[i]);
+            if (prefabsList.Count > 0)
+            {
+                for (int i = 0; i < prefabsList.Count; i++)
+                    prefabsList[i] = HandleIndividualPrefabItems(prefabsList[i]);
+            }
 
             //save the inputs, if anything changed
             if (dirtyPrefabsList)
