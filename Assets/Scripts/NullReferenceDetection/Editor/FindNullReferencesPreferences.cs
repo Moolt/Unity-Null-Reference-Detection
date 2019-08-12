@@ -77,9 +77,9 @@ namespace NullReferenceDetection
             GUILayout.Space(5);
              
             var rect = EditorGUILayout.BeginHorizontal();
-            rect = new Rect(rect.x, rect.y - CellMargin, rect.width, 55 + CellMargin * 2f);
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
-                         
+            rect = new Rect(rect.x, rect.y - CellMargin, rect.width, 10 + CellMargin);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 55 + CellMargin * 2f), new Color(0.5f, 0.5f, 0.5f, 0.3f));//the drawn rectangle is bigger than the actual rectangle to include the buttons
+          
             EditorGUI.LabelField(rect, "Use +/- buttons to increase or decrease number of items in ignore list: (" + ignoreList.Count.ToString() + ")");
                          
             EditorGUILayout.EndHorizontal();
@@ -145,8 +145,8 @@ namespace NullReferenceDetection
             GUILayout.Space(5);
 
             var rect = EditorGUILayout.BeginHorizontal();
-            rect = new Rect(rect.x, rect.y - CellMargin, rect.width, 55 + CellMargin * 2f);
-            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
+            rect = new Rect(rect.x, rect.y - CellMargin, rect.width, 10 + CellMargin);
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 55 + CellMargin * 2f), new Color(0.5f, 0.5f, 0.5f, 0.3f));//the drawn rectangle is bigger than the actual rectangle to include the buttons
             
             EditorGUI.LabelField(rect, "Use +/- buttons to increase or decrease number of items in external file list: (" + prefabsList.Count.ToString() + ")");
             
