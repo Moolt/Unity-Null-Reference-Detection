@@ -51,17 +51,29 @@ You can open the preferences window by navigating to `Edit -> Preferences -> Nul
 
 ![alt text](https://raw.githubusercontent.com/Moolt/Unity-Null-Reference-Detection/master/Documentation/settings_screen.png "preferences")
 
+Additionally in the preferences window you can define a list of GameObjects for which null references will be ignored, this is like the [ValueOptional] tag but affects the entire GameObject (and it's children, if the checkbox is ticked).
+
+![alt text](https://raw.githubusercontent.com/Moolt/Unity-Null-Reference-Detection/master/Documentation/settings_screen_ignore.png "ignore list")
+
+Finaly, by default the plug-in only scans GameObjects which are in the scene. If you have additional prefabs which are only instanciated at run-time, but you would like them to also be checked by the plug-in you can add the path to the prefab here.
+
+![alt text](https://raw.githubusercontent.com/Moolt/Unity-Null-Reference-Detection/master/Documentation/settings_screen_prefabs.png "prefabs")
+
+
 ## Extension
 
 By inheriting from the abstract `BaseAttribute` class you can implement your own attributes. They will also show up in the preferences window where you assign a color of your choice to your custom attribute.
 
 ## Good to know
 
-Clicking on an error message will highlight the target object in the `Hierarchy`.
+Clicking on an error message will highlight the target object in the `Hierarchy`, or if the target object is in a prefab it will highlight the folder in the `Project` panel.
+
+The save files for the preferences are plain text files, aiding in ease of use so that you can easily see what was added or removed when staging files or working on a merge request etc.
 
 ## The plug-in does not...
  *  check list items for null references.
  *  check for properties of default unity components (such as transform, box collider etc.)
  *  consider objects in other scenes but the currently opened scene.
  *  consider inactive objects.
+ *  automatically update the entry of a prefab if the filename or path changes
 
