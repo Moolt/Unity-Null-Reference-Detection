@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Serialization.Formatters.Binary;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Experimental.UIElements;
 
 namespace NullReferenceDetection
 {
