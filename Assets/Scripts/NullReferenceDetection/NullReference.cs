@@ -8,49 +8,21 @@ namespace NullReferenceDetection
     {
         public static readonly string UnattributedIdentifier = "Unattributed";
 
-        public Type Attribute;
-        public FieldInfo FieldInfo;
-        public Component Source;
+        public Type Attribute { get; set; }
 
-        public GameObject GameObject
-        {
-            get
-            {
-                return Source.gameObject;
-            }
-        }
+        public FieldInfo FieldInfo { get; set; }
 
-        public string GameObjectName
-        {
-            get
-            {
-                return Source.gameObject.name;
-            }
-        }
+        public Component Source { get; set; }
 
-        public string ComponentName
-        {
-            get
-            {
-                return Source.GetType().ToString();
-            }
-        }
+        public GameObject GameObject => Source.gameObject;
 
-        public string FieldName
-        {
-            get
-            {
-                return FieldInfo.Name;
-            }
-        }
+        public string GameObjectName => Source.gameObject.name;
 
-        public bool IsAttributed
-        {
-            get
-            {
-                return Attribute != null;
-            }
-        }
+        public string ComponentName => Source.GetType().ToString();
+
+        public string FieldName => FieldInfo.Name;
+
+        public bool IsAttributed => Attribute != null;
 
         public string AttributeIdentifier
         {

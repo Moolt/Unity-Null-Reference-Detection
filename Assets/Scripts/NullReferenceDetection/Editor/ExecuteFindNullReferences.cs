@@ -16,7 +16,11 @@ namespace NullReferenceDetection
         public static bool CheckForNullReferences(Func<NullReference, bool> filter)
         {
             var detector = new NullReferenceDetector();
-            var nullReferences = detector.FindAllNullReferences(filter, ExtensionMethods.LoadIgnoreList(), ExtensionMethods.LoadPrefabList()).ToList();
+            var nullReferences = detector.FindAllNullReferences(
+                PreferencesSerialization.LoadPrefabList(),
+                filter,
+                PreferencesSerialization.LoadIgnoreList())
+                .ToList();
 
             foreach (var nullReference in nullReferences)
             {
@@ -34,13 +38,16 @@ namespace NullReferenceDetection
 
             return nullReferences.Any();
         }
-        
+
         public static bool IsNotUnity(NullReference nullReference)
         {
-            var ns = nullReference.FieldInfo.FieldType.Namespace;
-            return ns != null && !ns.Split('.').First().Equals("UnityEngine");
+            var namespaceName = nullReference.FieldInfo.FieldType.Namespace;
+            return namespaceName != null && !namespaceName
+                .Split('.')
+                .First()
+                .Equals("UnityEngine");
         }
-        
+
         public static bool IsVisible(NullReference nullReference)
         {
             return PreferencesStorage.IsVisible(nullReference.AttributeIdentifier);

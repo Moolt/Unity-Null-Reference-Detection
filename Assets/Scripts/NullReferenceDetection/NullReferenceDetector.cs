@@ -2,35 +2,41 @@
 using UnityEngine;
 using System.Linq;
 using System.Reflection;
-using UnityObject = UnityEngine.Object;
 using System;
+using UnityObject = UnityEngine.Object;
 
 namespace NullReferenceDetection
 {
     public class NullReferenceDetector
     {
-        public IEnumerable<NullReference> FindAllNullReferences(List<Tuple<string, bool>> ignoreList, List<GameObject> prefabList)
-        {        
+        public IEnumerable<NullReference> FindAllNullReferences(
+            IEnumerable<GameObject> prefabList,
+            IEnumerable<BlacklistItem> ignoreList = null)
+        {
             var sceneObjects = UnityObject.FindObjectsOfType<GameObject>();
+            var prefabObjects = FindObjectsInPrefabs(prefabList);
+            var allObjects = sceneObjects.Concat(prefabObjects);
 
-            var prefabObjects = FindObjectsInPrefabs(prefabList); 
-            
-            var allObjects = sceneObjects.Concat(prefabObjects).ToArray();
-                
-            allObjects = RemoveIgnoredItems(allObjects, ignoreList);
-            
-            return allObjects.SelectMany(o => FindNullReferencesIn(o));
+            if (ignoreList != null)
+            {
+                allObjects = RemoveIgnoredItems(allObjects, ignoreList);
+            }
+
+            return allObjects.SelectMany(o => FindNullReferencesIn(o)).ToList();
         }
 
-        public IEnumerable<NullReference> FindAllNullReferences(Func<NullReference,bool> filter, List<Tuple<string, bool>> ignoreList, List<GameObject> prefabList)
+        public IEnumerable<NullReference> FindAllNullReferences(
+            IEnumerable<GameObject> prefabList,
+            Func<NullReference, bool> filter,
+            IEnumerable<BlacklistItem> ignoreList = null)
         {
-            return FindAllNullReferences(ignoreList, prefabList).Where(filter).ToList();
+            return FindAllNullReferences(prefabList, ignoreList).Where(filter).ToList();
         }
 
         private IEnumerable<NullReference> FindNullReferencesIn(GameObject gameObject)
         {
             var components = gameObject.AllComponents();
-            return components.Where(n=>n!=null).SelectMany(c => FindNullReferencesIn(c));
+            return components.Where(n => n != null).SelectMany(c => FindNullReferencesIn(c));
         }
 
         private IEnumerable<NullReference> FindNullReferencesIn(Component component)
@@ -38,7 +44,13 @@ namespace NullReferenceDetection
             var inspectableFields = component.GetInspectableFields();
             var nullFields = inspectableFields.Where(f => f.IsNull(component));
 
-            return nullFields.Select(f => new NullReference { Source = component, FieldInfo = f, Attribute = AttributeFor(f) });
+            return nullFields.Select(f =>
+                new NullReference
+                {
+                    Source = component,
+                    FieldInfo = f,
+                    Attribute = AttributeFor(f)
+                }).ToList();
         }
 
         private Type AttributeFor(FieldInfo field)
@@ -51,53 +63,55 @@ namespace NullReferenceDetection
             return null;
         }
 
-        private GameObject[] RemoveIgnoredItems(GameObject[] objects, List<Tuple<string, bool>> ignoreList)
-        {            
-            List<GameObject> objectsToBeRemoved = new List<GameObject>();
-            
-            ////1. make a list of gameobjects to be filtered out (not really efficient but it doesnt need to be 👿)
-            foreach (var tuple in ignoreList)
-            {
-                foreach (GameObject g in objects)
-                {
-                    if (g.name == tuple.Item1)
-                    {
-                        objectsToBeRemoved.Add(g);
+        private IEnumerable<GameObject> RemoveIgnoredItems(IEnumerable<GameObject> inputObjects, IEnumerable<BlacklistItem> ignoreList)
+        {
+            var objectsToBeRemoved = new List<GameObject>();
 
-                        if (tuple.Item2)
-                        {
-                            foreach (Transform t in g.transform)
-                            {
-                                objectsToBeRemoved.Add(t.gameObject);
-                            }
-                        }
+            // Make a list of gameobjects to be filtered out (not really efficient but it doesnt need to be 👿)
+            foreach (var blacklistItem in ignoreList)
+            {
+                foreach (var targetObject in inputObjects)
+                {
+                    if (targetObject.name != blacklistItem.Name)
+                    {
+                        continue;
+                    }
+                    objectsToBeRemoved.Add(targetObject);
+
+                    if (!blacklistItem.IgnoreChildren)
+                    {
+                        continue;
+                    }
+
+                    foreach (Transform child in targetObject.transform)
+                    {
+                        objectsToBeRemoved.Add(child.gameObject);
                     }
                 }
             }
 
-            ////2. now remove those items we found
-            
-            List<GameObject> cleanedList = objects.ToList();
+            // Now remove those items we found
+            var cleanedList = inputObjects.ToList();
 
-            foreach (GameObject g in objectsToBeRemoved)
+            foreach (var targetObject in objectsToBeRemoved)
             {
-                cleanedList.Remove(g);
+                cleanedList.Remove(targetObject);
             }
-            
-            return cleanedList.ToArray();
+
+            return cleanedList;
         }
 
-        private GameObject[] FindObjectsInPrefabs(List<GameObject> prefabList)
+        private IEnumerable<GameObject> FindObjectsInPrefabs(IEnumerable<GameObject> prefabList)
         {
-            List<GameObject> foundObjects = new List<GameObject>();
-            
+            var foundObjects = new List<GameObject>();
+
             foreach (var gameObject in prefabList)
             {
                 foundObjects.Add(gameObject);
                 foundObjects.AddRange(gameObject.GetComponentsInChildren<Transform>().Select(t => t.gameObject));
             }
 
-            return foundObjects.ToArray();
+            return foundObjects;
         }
     }
 }
