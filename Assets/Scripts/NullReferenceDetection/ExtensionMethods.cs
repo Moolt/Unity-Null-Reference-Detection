@@ -15,18 +15,20 @@ namespace NullReferenceDetection
 
         public static IEnumerable<FieldInfo> GetInspectableFields(this Component component)
         {
-            var type = component.GetType();
+            var componentType = component.GetType();
             var inspectableFields = new List<FieldInfo>();
 
-            var publicFields = type.GetFields(BindingFlags.Public | BindingFlags.Instance).ToList();
-            var privateFields = type.GetFields(BindingFlags.NonPublic | BindingFlags.Instance).ToList();
+            var publicFields = componentType.GetFields(BindingFlags.Public | BindingFlags.Instance).ToList();
+            var privateFields = componentType.GetFields(BindingFlags.NonPublic | BindingFlags.Instance).ToList();
 
-            //Private fields can be inspected if they are explicitly serialized
+            // Private fields can be inspected if they are explicitly serialized
             privateFields = privateFields.Where(f => f.HasAttribute<SerializeField>()).ToList();
-            //Add remaining private and public fields to the list of all inspectable fields
+            
+            // Add remaining private and public fields to the list of all inspectable fields
             inspectableFields.AddRange(publicFields);
             inspectableFields.AddRange(privateFields);
-            //Remove fields that should be hidden in the inspector
+            
+            // Remove fields that should be hidden in the inspector
             inspectableFields = inspectableFields.Where(f => !f.HasAttribute<HideInInspector>()).ToList();
 
             return inspectableFields;

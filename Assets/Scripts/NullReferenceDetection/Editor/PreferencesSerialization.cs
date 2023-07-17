@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
+using UnityEditor;
 
 namespace NullReferenceDetection
 {
@@ -70,11 +70,11 @@ namespace NullReferenceDetection
 
                     var name = line.Substring(0, line.Length - 2);
 
-                    if (line[line.Length - 1] == '1')
+                    if (line[^1] == '1')
                     {
                         ignoreList.Add(new BlacklistItem(name, ignoreChildren: true));
                     }
-                    if (line[line.Length - 1] == '0')
+                    if (line[^1] == '0')
                     {
                         ignoreList.Add(new BlacklistItem(name, ignoreChildren: false));
                     }
@@ -144,6 +144,11 @@ namespace NullReferenceDetection
                 {
                     var line = reader.ReadLine();
 
+                    if (line == null)
+                    {
+                        continue;
+                    }
+                    
                     if (line.Trim().Length == 0)
                     {
                         continue;
