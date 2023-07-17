@@ -22,21 +22,21 @@ namespace NullReferenceDetection
                 allObjects = RemoveIgnoredItems(allObjects, ignoreList);
             }
 
-            return allObjects.SelectMany(o => FindNullReferencesIn(o)).ToList();
+            return allObjects.SelectMany(FindNullReferencesIn).ToList();
         }
 
         public IEnumerable<NullReference> FindAllNullReferences(
             IEnumerable<GameObject> prefabList,
-            Func<NullReference, bool> filter,
+            Func<NullReference, bool> predicate,
             IEnumerable<BlacklistItem> ignoreList = null)
         {
-            return FindAllNullReferences(prefabList, ignoreList).Where(filter).ToList();
+            return FindAllNullReferences(prefabList, ignoreList).Where(predicate).ToList();
         }
 
         private IEnumerable<NullReference> FindNullReferencesIn(GameObject gameObject)
         {
             var components = gameObject.AllComponents();
-            return components.Where(n => n != null).SelectMany(c => FindNullReferencesIn(c));
+            return components.Where(n => n != null).SelectMany(FindNullReferencesIn);
         }
 
         private IEnumerable<NullReference> FindNullReferencesIn(Component component)

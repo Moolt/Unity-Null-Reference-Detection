@@ -12,6 +12,6 @@
 
         public bool IgnoreChildren { get; }
 
-        public bool NameEmpty => Name == null || Name.Length == 0;
+        public bool NameEmpty => string.IsNullOrEmpty(Name);
     }
 }
