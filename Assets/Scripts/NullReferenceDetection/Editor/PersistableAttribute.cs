@@ -1,19 +1,20 @@
 ﻿using UnityEditor;
 using UnityEngine;
 
-namespace NullReferenceDetection
+namespace NullReferenceDetection.Editor
 {
     public class PersistableAttribute
     {
         private const string EnabledPostfix = "enabled";
         private const string ColorPostfix = "color";
 
-        private readonly bool _defaultEnabledState = false;
+        private readonly bool _defaultEnabledState;
         private readonly Color _defaultColor = Color.black;
 
-        private string _identifier;
-        private bool? _enabled = null;
-        private Color? _color = null;
+        private readonly string _identifier;
+        
+        private bool? _enabled;
+        private Color? _color;
 
         public PersistableAttribute(string identifier)
         {
@@ -36,13 +37,7 @@ namespace NullReferenceDetection
             }
         }
 
-        public string Identifier
-        {
-            get
-            {
-                return _identifier;
-            }
-        }
+        public string Identifier => _identifier;
 
         public bool IsEnabled
         {
@@ -98,9 +93,9 @@ namespace NullReferenceDetection
             }
         }
 
-        private string KeyForPostfix(string postix)
+        private string KeyForPostfix(string postfix)
         {
-            return string.Format("null_helper_{0}_{1}", _identifier, postix);
+            return $"null_helper_{_identifier}_{postfix}";
         }
 
         private bool IsEntryExistingFor(string postfix)

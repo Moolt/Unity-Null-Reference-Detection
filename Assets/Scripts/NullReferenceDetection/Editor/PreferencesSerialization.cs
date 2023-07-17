@@ -1,16 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using UnityEngine;
 using UnityEditor;
+using UnityEngine;
 
-namespace NullReferenceDetection
+namespace NullReferenceDetection.Editor
 {
     public static class PreferencesSerialization
     {
         #region save/load functions
 
-        //TODO: Where would we like to save the files?
+        // TODO: Where would we like to save the files?
         private static readonly string FolderPath = string.Empty;
         private static readonly string IgnoreListfile = FolderPath + "NullReferenceDetector.IgnoreList";
         private static readonly string PrefabListFile = FolderPath + "NullReferenceDetector.PrefabList";
@@ -63,6 +63,11 @@ namespace NullReferenceDetection
                 {
                     var line = reader.ReadLine();
 
+                    if (line == null)
+                    {
+                        continue;
+                    }
+                    
                     if (line.Trim().Length == 0)
                     {
                         continue;

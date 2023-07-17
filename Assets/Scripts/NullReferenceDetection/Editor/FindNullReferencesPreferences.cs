@@ -3,7 +3,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-namespace NullReferenceDetection
+namespace NullReferenceDetection.Editor
 {
     public class FindNullReferencesPreferences : MonoBehaviour
     {
@@ -18,20 +18,28 @@ namespace NullReferenceDetection
         // Keeps track of whether the local list has had any changes made to it
         private static bool _dirtyPrefabsList;
 
-        [PreferenceItem("Null Finder")]
-        public static void PreferencesGUI()
+        [SettingsProvider]
+        public static SettingsProvider PreferencesGUI()
         {
-            GUILayout.Space(15);
+            return new SettingsProvider("Project/Null Reference Detection", SettingsScope.Project)
+            {
+                label = "Null Reference Detection",
+                guiHandler = (searchContext) =>
+                {
+                    GUILayout.Space(15);
 
-            HandleAttributePreferences();
+                    HandleAttributePreferences();
 
-            GUILayout.Space(15);
+                    GUILayout.Space(15);
 
-            HandleIgnoreListPreferences();
+                    HandleIgnoreListPreferences();
 
-            GUILayout.Space(15);
+                    GUILayout.Space(15);
 
-            HandlePrefabPreferences();
+                    HandlePrefabPreferences();
+                },
+                keywords = new HashSet<string>(new[] {"null", "find", "detect", "reference", "pointer"})
+            };
         }
 
         #region attribute preferences
@@ -76,18 +84,23 @@ namespace NullReferenceDetection
             if (_ignoreList == null)
             {
                 _ignoreList = PreferencesSerialization
-                .LoadIgnoreList()
-                .ToList();
+                    .LoadIgnoreList()
+                    .ToList();
             }
 
-            EditorGUILayout.LabelField("Ignore list - enter the name of a GameObject to ignore when scanning (case sensitive)");
+            EditorGUILayout.LabelField(
+                "Ignore list - enter the name of a GameObject to ignore when scanning (case sensitive)");
             GUILayout.Space(5);
 
             var rect = EditorGUILayout.BeginHorizontal();
             rect = new Rect(rect.x, rect.y - CellMargin, rect.width, 10 + CellMargin);
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 55 + CellMargin * 2f), new Color(0.5f, 0.5f, 0.5f, 0.3f));//the drawn rectangle is bigger than the actual rectangle to include the buttons
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 55 + CellMargin * 2f),
+                new Color(0.5f, 0.5f, 0.5f,
+                    0.3f)); //the drawn rectangle is bigger than the actual rectangle to include the buttons
 
-            EditorGUI.LabelField(rect, "Use +/- buttons to increase or decrease number of items in ignore list: (" + _ignoreList.Count.ToString() + ")");
+            EditorGUI.LabelField(rect,
+                "Use +/- buttons to increase or decrease number of items in ignore list: (" +
+                _ignoreList.Count + ")");
 
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(10);
@@ -153,21 +166,22 @@ namespace NullReferenceDetection
 
         private static void HandlePrefabPreferences()
         {
-            if (_prefabsList == null)
-            {
-                _prefabsList = PreferencesSerialization.LoadPrefabList().ToList();
-            }
+            _prefabsList ??= PreferencesSerialization.LoadPrefabList().ToList();
 
-            EditorGUILayout.LabelField("Additional Prefabs to scan (only objects in the scene will be scanned, plus any prefabs which you define here)");
+            EditorGUILayout.LabelField(
+                "Additional Prefabs to scan (only objects in the scene will be scanned, plus any prefabs which you define here)");
             GUILayout.Space(5);
 
             var rect = EditorGUILayout.BeginHorizontal();
             rect = new Rect(rect.x, rect.y - CellMargin, rect.width, 10 + CellMargin);
 
             // The drawn rectangle is bigger than the actual rectangle to include the buttons
-            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 55 + CellMargin * 2f), new Color(0.5f, 0.5f, 0.5f, 0.3f));
+            EditorGUI.DrawRect(new Rect(rect.x, rect.y, rect.width, 55 + CellMargin * 2f),
+                new Color(0.5f, 0.5f, 0.5f, 0.3f));
 
-            EditorGUI.LabelField(rect, "Use +/- buttons to increase or decrease number of items in external file list: (" + _prefabsList.Count.ToString() + ")");
+            EditorGUI.LabelField(rect,
+                "Use +/- buttons to increase or decrease number of items in external file list: (" +
+                _prefabsList.Count + ")");
 
             EditorGUILayout.EndHorizontal();
             GUILayout.Space(10);
@@ -209,7 +223,8 @@ namespace NullReferenceDetection
             EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
 
             GameObject newValue = null;
-            newValue = (GameObject)EditorGUI.ObjectField(new Rect(rect.x, rect.y + 7, 400, 15), "Select a prefab:", previousValue, typeof(GameObject), false);
+            newValue = (GameObject) EditorGUI.ObjectField(new Rect(rect.x, rect.y + 7, 400, 15), "Select a prefab:",
+                previousValue, typeof(GameObject), false);
 
             EditorGUILayout.LabelField("", GUILayout.Width(500));
 

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 
-namespace NullReferenceDetection
+namespace NullReferenceDetection.Editor
 {
     public static class PreferencesStorage
     {
-        private static readonly Dictionary<string, PersistableAttribute> mapping = new Dictionary<string, PersistableAttribute>();
+        private static readonly Dictionary<string, PersistableAttribute> Mapping = new();
 
         static PreferencesStorage()
         {
@@ -19,9 +17,9 @@ namespace NullReferenceDetection
         {
             var attributes = typeof(BaseAttribute).GetDescendantTypes();
 
-            // Initialize settings for unattributes fields
+            // Initialize settings for unattributed fields
             var unattributedWrapper = new PersistableAttribute(NullReference.UnattributedIdentifier, true, new Color(.717f, .647f, .125f));
-            mapping.Add(NullReference.UnattributedIdentifier, unattributedWrapper);
+            Mapping.Add(NullReference.UnattributedIdentifier, unattributedWrapper);
 
             // Initialize Attributes
             foreach (var attribute in attributes)
@@ -41,36 +39,25 @@ namespace NullReferenceDetection
                     persistenceWrapper = new PersistableAttribute(attribute.Name);
                 }
 
-                mapping.Add(attribute.Name, persistenceWrapper);
+                Mapping.Add(attribute.Name, persistenceWrapper);
             }
         }
 
-        public static PersistableAttribute PersistableAttributeFor(string attributeName)
+        private static PersistableAttribute PersistableAttributeFor(string attributeName)
         {
-            return mapping[attributeName];
-        }
-
-        public static PersistableAttribute PersistableAttributeFor(Type attributeType)
-        {
-            return PersistableAttributeFor(attributeType.Name);
+            return Mapping[attributeName];
         }
 
         public static bool IsVisible(string attributeName)
         {
-            return mapping[attributeName].IsEnabled;
+            return Mapping[attributeName].IsEnabled;
         }
 
         public static Color ColorFor(string attributeName)
         {
-            return mapping[attributeName].Color;
+            return Mapping[attributeName].Color;
         }
 
-        public static IEnumerable<PersistableAttribute> PersistableAttributes
-        {
-            get
-            {
-                return mapping.Values.ToList();
-            }
-        }
+        public static IEnumerable<PersistableAttribute> PersistableAttributes => Mapping.Values.ToList();
     }
 }

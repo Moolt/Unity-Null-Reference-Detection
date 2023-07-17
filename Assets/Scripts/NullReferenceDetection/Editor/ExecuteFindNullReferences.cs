@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using System.Linq;
 
-namespace NullReferenceDetection
+namespace NullReferenceDetection.Editor
 {
     public static class ExecuteFindNullReferences
     {

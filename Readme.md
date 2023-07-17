@@ -47,7 +47,7 @@ If you now execute the plug-in via `Tools > Find Null References` the console wi
 
 ## Preferences
 
-You can open the preferences window by navigating to `Edit -> Preferences -> Null finder` where you can define which occurences of null references should be printed to the console. You can also change their text color.
+You can open the preferences window by navigating to `Edit -> Project Settings -> Null Reference Detection` where you can define which occurences of null references should be printed to the console. You can also change their text color.
 
 ![alt text](https://raw.githubusercontent.com/Moolt/Unity-Null-Reference-Detection/master/Documentation/settings_screen.png "preferences")
 
