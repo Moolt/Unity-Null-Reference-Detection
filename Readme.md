@@ -49,6 +49,8 @@ If you now execute the plug-in via `Tools > Find Null References` the console wi
 
 You can open the preferences window by navigating to `Edit -> Project Settings -> Null Reference Detection` where you can define which occurences of null references should be printed to the console. You can also change their text color.
 
+If you want to automatically check for null references, you can do so by activating checks on entering play mode or on compilation. You can also prevent Unity from entering play mode if any null references were found.
+
 ![alt text](https://raw.githubusercontent.com/Moolt/Unity-Null-Reference-Detection/master/Documentation/settings_screen.png "preferences")
 
 Additionally in the preferences window you can define a list of GameObjects for which null references will be ignored, this is like the [ValueOptional] tag but affects the entire GameObject (and it's children, if the checkbox is ticked).

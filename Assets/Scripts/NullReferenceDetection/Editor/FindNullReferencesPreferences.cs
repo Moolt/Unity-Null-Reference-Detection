@@ -78,7 +78,7 @@ namespace NullReferenceDetection.Editor
             EditorGUILayout.LabelField("Automatic checks:");
             GUILayout.Space(5);
 
-            HandleToggle(PersistableBoolean.CheckOnPlay, "Check on play");
+            HandleToggle(PersistableBoolean.CheckOnPlay, "Check on entering play mode");
 
             if (PersistableBoolean.CheckOnPlay)
             {
