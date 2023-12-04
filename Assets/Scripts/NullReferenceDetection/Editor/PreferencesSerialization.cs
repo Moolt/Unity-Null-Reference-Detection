@@ -12,7 +12,7 @@ namespace NullReferenceDetection.Editor
 
         // TODO: Where would we like to save the files?
         private static readonly string FolderPath = string.Empty;
-        private static readonly string IgnoreListfile = FolderPath + "NullReferenceDetector.IgnoreList";
+        private static readonly string IgnoreListFile = FolderPath + "NullReferenceDetector.IgnoreList";
         private static readonly string PrefabListFile = FolderPath + "NullReferenceDetector.PrefabList";
 
         /// <summary>
@@ -25,7 +25,7 @@ namespace NullReferenceDetection.Editor
 
             try
             {
-                var writer = new StreamWriter(IgnoreListfile, false);
+                var writer = new StreamWriter(IgnoreListFile, false);
 
                 foreach (var itemToIgnore in ignoreList)
                 {
@@ -48,16 +48,16 @@ namespace NullReferenceDetection.Editor
         {
             var ignoreList = new List<BlacklistItem>();
 
-            if (!File.Exists(IgnoreListfile))
+            if (!File.Exists(IgnoreListFile))
             {
-                File.Create(IgnoreListfile);
+                File.Create(IgnoreListFile);
                 Debug.LogWarning("Null reference checker found no previously saved preferences file, so it created a new one");
                 return ignoreList;
             }
 
             try
             {
-                var reader = new StreamReader(IgnoreListfile);
+                var reader = new StreamReader(IgnoreListFile);
 
                 while (reader.Peek() != -1)
                 {

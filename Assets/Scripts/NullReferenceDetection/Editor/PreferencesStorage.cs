@@ -43,11 +43,6 @@ namespace NullReferenceDetection.Editor
             }
         }
 
-        private static PersistableAttribute PersistableAttributeFor(string attributeName)
-        {
-            return Mapping[attributeName];
-        }
-
         public static bool IsVisible(string attributeName)
         {
             return Mapping[attributeName].IsEnabled;

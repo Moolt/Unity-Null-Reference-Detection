@@ -10,7 +10,7 @@ namespace NullReferenceDetection.Editor
         [MenuItem("Tools/Find Null References")]
         public static void Execute()
         {
-            CheckForNullReferences(IsVisible);
+            CheckForNullReferences();
         }
 
         public static bool CheckForNullReferences(Func<NullReference, bool> filter)
@@ -39,24 +39,20 @@ namespace NullReferenceDetection.Editor
             return nullReferences.Any();
         }
 
-        public static bool IsNotUnity(NullReference nullReference)
+        public static bool CheckForNullReferences()
         {
-            var namespaceName = nullReference.FieldInfo.FieldType.Namespace;
-            return namespaceName != null && !namespaceName
-                .Split('.')
-                .First()
-                .Equals("UnityEngine");
+            return CheckForNullReferences(IsVisible);
         }
 
-        public static bool IsVisible(NullReference nullReference)
+        private static bool IsVisible(NullReference nullReference)
         {
             return PreferencesStorage.IsVisible(nullReference.AttributeIdentifier);
         }
 
-        public static string ColorFor(NullReference nullReference)
+        private static string ColorFor(NullReference nullReference)
         {
             var color = PreferencesStorage.ColorFor(nullReference.AttributeIdentifier);
-            return string.Format("#{0}", ColorUtility.ToHtmlStringRGB(color));
+            return $"#{ColorUtility.ToHtmlStringRGB(color)}";
         }
     }
 }

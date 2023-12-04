@@ -88,7 +88,7 @@ namespace NullReferenceDetection.Editor
             {
                 _color = value;
                 var colorInstance = _color ?? _defaultColor;
-                var hexColor = string.Format("#{0}", ColorUtility.ToHtmlStringRGB(colorInstance));
+                var hexColor = $"#{ColorUtility.ToHtmlStringRGB(colorInstance)}";
                 EditorPrefs.SetString(KeyForPostfix(ColorPostfix), hexColor);
             }
         }

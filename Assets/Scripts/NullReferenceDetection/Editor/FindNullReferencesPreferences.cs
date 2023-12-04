@@ -26,9 +26,11 @@ namespace NullReferenceDetection.Editor
                 label = "Null Reference Detection",
                 guiHandler = (searchContext) =>
                 {
+                    HandleAttributePreferences();
+
                     GUILayout.Space(15);
 
-                    HandleAttributePreferences();
+                    HandleEventsToReactTo();
 
                     GUILayout.Space(15);
 
@@ -44,9 +46,6 @@ namespace NullReferenceDetection.Editor
 
         #region attribute preferences
 
-        /// <summary>
-        /// Do the UI elements for attribute tags
-        /// </summary>
         private static void HandleAttributePreferences()
         {
             EditorGUILayout.LabelField("Attribute tag preferences");
@@ -73,6 +72,32 @@ namespace NullReferenceDetection.Editor
         }
 
         #endregion
+
+        private static void HandleEventsToReactTo()
+        {
+            EditorGUILayout.LabelField("Automatic checks:");
+            GUILayout.Space(5);
+
+            HandleToggle(PersistableBoolean.CheckOnPlay, "Check on play");
+
+            if (PersistableBoolean.CheckOnPlay)
+            {
+                HandleToggle(PersistableBoolean.CheckOnPlayIntercept, "    Prevent from entering play mode");
+            }
+
+            HandleToggle(PersistableBoolean.CheckOnCompile, "Check on compile");
+        }
+
+        private static void HandleToggle(PersistableBoolean boolean, string text)
+        {
+            var rect = EditorGUILayout.BeginHorizontal();
+            rect = new Rect(rect.x, rect.y - CellMargin, rect.width, rect.height + CellMargin * 2f);
+            EditorGUI.DrawRect(rect, new Color(0.5f, 0.5f, 0.5f, 0.3f));
+            boolean.Value = EditorGUILayout.Toggle(boolean.Value, GUILayout.Width(15));
+            EditorGUILayout.LabelField(text, GUILayout.Width(200));
+            EditorGUILayout.EndHorizontal();
+            GUILayout.Space(14);
+        }
 
         #region ignore-items preferences
 
